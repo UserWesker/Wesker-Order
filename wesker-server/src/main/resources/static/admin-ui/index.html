@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>威斯克点单 · 管理后台</title>
+    <link rel="stylesheet" href="./admin.css?v=employee-status-toggle-1">
+    <script src="./admin.js?v=employee-status-toggle-1" defer></script>
+</head>
+<body>
+    <main id="login-view" class="login-view">
+        <div class="login-card">
+            <div class="login-photo" aria-hidden="true"></div>
+            <div class="login-panel">
+                <div class="brand">威斯克点单</div>
+                <h1>账号登录</h1>
+                <form id="login-form">
+                    <label for="login-username">用户名</label>
+                    <input id="login-username" name="username" required maxlength="32" autocomplete="username" placeholder="请输入用户名">
+                    <label for="login-password">密码</label>
+                    <input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="请输入密码">
+                    <p id="login-error" class="error" role="alert" hidden></p>
+                    <button class="primary login-submit" type="submit">登录</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="admin-view" class="admin-view" hidden>
+        <header class="topbar">
+            <div class="topbar-start">
+                <a class="brand" href="#employee">威斯克点单</a>
+                <button id="toggle-navigation" class="secondary" type="button" aria-controls="navigation" aria-expanded="true" aria-label="切换菜单">☰</button>
+                <button class="secondary business-button" type="button" disabled title="功能待开发">营业设置</button>
+            </div>
+            <div class="account">
+                <span id="account-name"></span>
+                <button id="logout" type="button" class="secondary">退出登录</button>
+            </div>
+        </header>
+        <div id="admin-layout" class="admin-layout">
+            <nav id="navigation" class="sidebar" aria-label="后台导航">
+                <a href="#workbench"><span aria-hidden="true">⌂</span>工作台</a>
+                <a href="#statistics"><span aria-hidden="true">▥</span>数据统计</a>
+                <a href="#orders"><span aria-hidden="true">≡</span>订单管理</a>
+                <a href="#set-meals"><span aria-hidden="true">▣</span>套餐管理</a>
+                <a href="#dishes"><span aria-hidden="true">◈</span>菜品管理</a>
+                <a href="#categories"><span aria-hidden="true">▦</span>分类管理</a>
+                <a href="#employee"><span aria-hidden="true">♙</span>员工管理</a>
+            </nav>
+            <main class="workspace">
+                <div class="page-heading">
+                    <a id="back" href="#employee" hidden>← 返回</a>
+                    <h1 id="page-title">员工管理</h1>
+                </div>
+                <p id="notice" class="notice" role="status" hidden></p>
+                <section id="employee-view" class="panel">
+                    <div class="toolbar">
+                        <form id="employee-search-form" class="filter">
+                            <label for="employee-search">员工姓名</label>
+                            <input id="employee-search" name="name" maxlength="32" placeholder="请输入员工姓名">
+                            <button class="secondary" type="submit">查询</button>
+                        </form>
+                        <a id="employee-add-link" class="primary" href="#employee/add">＋ 添加员工</a>
+                    </div>
+                    <p id="employee-list-message" class="list-message" role="status"></p>
+                    <div id="employee-table" class="employee-table" tabindex="0" role="region" aria-label="员工查询结果" hidden>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">员工姓名</th>
+                                    <th scope="col">账号</th>
+                                    <th scope="col">手机号</th>
+                                    <th scope="col">账号状态</th>
+                                    <th scope="col" class="employee-time">创建时间</th>
+                                    <th scope="col" class="employee-time">更新时间</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employee-records"></tbody>
+                        </table>
+                    </div>
+                    <div id="employee-pagination" class="employee-pagination" hidden>
+                        <span id="employee-page-info" aria-live="polite"></span>
+                        <button id="employee-prev" class="secondary" type="button">上一页</button>
+                        <button id="employee-next" class="secondary" type="button">下一页</button>
+                    </div>
+                </section>
+                <section id="add-view" class="panel" hidden>
+                    <form id="employee-form">
+                        <div class="employee-fields">
+                            <div class="field"><label for="employee-username">账号 <span>*</span></label><input id="employee-username" name="username" required maxlength="32" pattern=".*\S.*" title="账号不能为空或只包含空格" placeholder="请输入员工账号" autocomplete="off"></div>
+                            <div class="field"><label for="employee-name">员工姓名 <span>*</span></label><input id="employee-name" name="name" required maxlength="32" pattern=".*\S.*" title="员工姓名不能为空或只包含空格" placeholder="请输入员工姓名" autocomplete="off"></div>
+                            <div class="field"><label for="employee-phone">手机号 <span>*</span></label><input id="employee-phone" name="phone" type="tel" required inputmode="numeric" maxlength="11" pattern="1[3-9][0-9]{9}" title="请输入有效的 11 位手机号，以 1 开头，第二位为 3 至 9" placeholder="请输入 11 位手机号" autocomplete="off"></div>
+                            <fieldset class="field">
+                                <legend>性别 <span>*</span></legend>
+                                <div class="choices">
+                                    <label><input type="radio" name="sex" value="1" required>男</label>
+                                    <label><input type="radio" name="sex" value="0" required>女</label>
+                                </div>
+                            </fieldset>
+                            <div class="field"><label for="employee-id">身份证号 <span>*</span></label><input id="employee-id" name="idNumber" required minlength="18" maxlength="18" pattern="[1-9][0-9]{16}[0-9Xx]" title="请输入 18 位身份证号，前 17 位为数字且首位不为 0，最后一位可为数字或 X" placeholder="请输入 18 位身份证号" autocomplete="off"></div>
+                            <div class="field"><label for="employee-password">初始密码 <span>*</span></label><input id="employee-password" name="password" type="password" required minlength="8" maxlength="72" pattern=".*\S.*" title="初始密码至少 8 个字符，不能只包含空格" placeholder="至少 8 个字符" autocomplete="new-password"></div>
+                            <p id="employee-error" class="error" role="alert" hidden></p>
+                        </div>
+                        <div class="form-actions">
+                            <a class="secondary" href="#employee">取消</a>
+                            <button class="secondary" type="submit" value="save">保存</button>
+                            <button class="primary" type="submit" value="continue">保存并继续添加</button>
+                        </div>
+                    </form>
+                </section>
+                <section id="placeholder-view" class="panel empty-state" hidden>
+                    <span class="empty-icon" aria-hidden="true">▦</span>
+                    <strong>功能待开发</strong>
+                </section>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

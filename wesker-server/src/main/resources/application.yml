@@ -1,0 +1,18 @@
+server:
+  address: ${WESKER_SERVER_ADDRESS:127.0.0.1}
+
+spring:
+  config:
+    import: "optional:file:./.local/employee-login-local.yml"
+  datasource:
+    url: ${WESKER_DB_URL:}
+    username: ${WESKER_DB_USER:}
+    password: ${WESKER_DB_PASSWORD:}
+  sql:
+    init:
+      mode: never
+
+wesker:
+  jwt:
+    admin-secret-key: ${WESKER_JWT_SECRET:${wesker.local.jwt-secret:}}
+    admin-ttl: ${WESKER_JWT_TTL:2h}

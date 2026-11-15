@@ -1,0 +1,9 @@
+.local/
+/data/
+.env
+.env.local
+.idea/
+*.iml
+target/
+node_modules/
+dist/
