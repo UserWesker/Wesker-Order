@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS employee (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(32),
     username VARCHAR(32) NOT NULL,
-    password VARCHAR(64),
     phone VARCHAR(11),
     sex VARCHAR(2),
     id_number VARCHAR(18),

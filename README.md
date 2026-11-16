@@ -1,6 +1,8 @@
 # 威斯克点单
 
-员工管理练习项目，包含账号登录、员工新增、分页查询和启用／禁用。运行前请准备 JDK 17、Maven 和自己的 MySQL 8.0 数据库。
+员工管理练习项目，包含管理员登录、员工新增、分页查询和启用／禁用。员工资料不包含登录密码。运行前请准备 JDK 17、Maven 和自己的 MySQL 8.0 数据库。
+
+如果已有旧版数据库，并且 `employee` 表仍有密码列，请在停掉旧版应用后执行一次 [`scripts/003_remove_employee_password.sql`](scripts/003_remove_employee_password.sql)。
 
 ## 接入自己的数据库
 

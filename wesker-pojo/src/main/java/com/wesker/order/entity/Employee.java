@@ -6,7 +6,6 @@ public record Employee(
         Long id,
         String name,
         String username,
-        String password,
         String phone,
         String sex,
         String idNumber,

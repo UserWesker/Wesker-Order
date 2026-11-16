@@ -14,8 +14,6 @@ public record EmployeeDTO(
         @NotBlank(message = "请选择性别")
         @Pattern(regexp = "[01]", message = "性别只能为 1（男）或 0（女）") String sex,
         @NotBlank(message = "身份证号不能为空")
-        @Pattern(regexp = "[1-9][0-9]{16}[0-9Xx]", message = "身份证号须为 18 位，末位可为数字或 X") String idNumber,
-        @NotBlank(message = "初始密码不能为空")
-        @Size(min = 8, max = 72, message = "初始密码长度须为 8 至 72 个字符") String password
+        @Pattern(regexp = "[1-9][0-9]{16}[0-9Xx]", message = "身份证号须为 18 位，末位可为数字或 X") String idNumber
 ) {
 }

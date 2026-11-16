@@ -18,8 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class JwtTokenAdminInterceptor implements HandlerInterceptor {
-    public static final String ACCOUNT_ID_ATTRIBUTE = "authenticatedAccountId";
-    public static final String ROLE_ATTRIBUTE = "authenticatedRole";
+    public static final String ADMIN_ID_ATTRIBUTE = "authenticatedAdminId";
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtProperties jwtProperties;
@@ -37,8 +36,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        JwtUtil.VerifiedAccount account = verifyAccount(request.getHeader(HttpHeaders.AUTHORIZATION));
-        if (account == null) {
+        Long adminId = verifyAdminId(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (adminId == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -46,12 +45,11 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        request.setAttribute(ACCOUNT_ID_ATTRIBUTE, account.accountId());
-        request.setAttribute(ROLE_ATTRIBUTE, account.role());
+        request.setAttribute(ADMIN_ID_ATTRIBUTE, adminId);
         return true;
     }
 
-    private JwtUtil.VerifiedAccount verifyAccount(String authorization) {
+    private Long verifyAdminId(String authorization) {
         if (authorization == null
                 || !authorization.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
             return null;
@@ -59,7 +57,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
         String token = authorization.substring(BEARER_PREFIX.length()).trim();
         try {
-            return JwtUtil.verifyAccount(jwtProperties.adminSecretKey(), token);
+            return JwtUtil.verifyAdminId(jwtProperties.adminSecretKey(), token);
         } catch (JWTVerificationException exception) {
             return null;
         }

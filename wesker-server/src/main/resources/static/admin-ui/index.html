@@ -3,22 +3,29 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>威斯克点单 · 管理后台</title>
-    <link rel="stylesheet" href="./admin.css?v=employee-status-toggle-1">
-    <script src="./admin.js?v=employee-status-toggle-1" defer></script>
+    <title>威斯克点单管理员系统</title>
+    <link rel="stylesheet" href="./admin.css?v=employee-action-confirm-1">
+    <script src="./admin.js?v=employee-action-confirm-1" defer></script>
 </head>
 <body>
     <main id="login-view" class="login-view">
         <div class="login-card">
-            <div class="login-photo" aria-hidden="true"></div>
             <div class="login-panel">
-                <div class="brand">威斯克点单</div>
-                <h1>账号登录</h1>
+                <h1>威斯克点单管理员系统</h1>
                 <form id="login-form">
                     <label for="login-username">用户名</label>
                     <input id="login-username" name="username" required maxlength="32" autocomplete="username" placeholder="请输入用户名">
                     <label for="login-password">密码</label>
-                    <input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="请输入密码">
+                    <div class="login-password-field">
+                        <input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="请输入密码">
+                        <button id="toggle-login-password" class="password-toggle" type="button" aria-label="显示密码" aria-pressed="false" aria-controls="login-password" title="显示密码">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12S5.5 5.5 12 5.5 22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="2.5"/>
+                                <path class="password-eye-slash" d="M3 3l18 18"/>
+                            </svg>
+                        </button>
+                    </div>
                     <p id="login-error" class="error" role="alert" hidden></p>
                     <button class="primary login-submit" type="submit">登录</button>
                 </form>
@@ -72,8 +79,7 @@
                                     <th scope="col">账号</th>
                                     <th scope="col">手机号</th>
                                     <th scope="col">账号状态</th>
-                                    <th scope="col" class="employee-time">创建时间</th>
-                                    <th scope="col" class="employee-time">更新时间</th>
+                                    <th scope="col" class="employee-time">最后操作时间</th>
                                     <th scope="col">操作</th>
                                 </tr>
                             </thead>
@@ -87,6 +93,7 @@
                     </div>
                 </section>
                 <section id="add-view" class="panel" hidden>
+                    <p id="employee-edit-message" class="list-message" role="status" hidden></p>
                     <form id="employee-form">
                         <div class="employee-fields">
                             <div class="field"><label for="employee-username">账号 <span>*</span></label><input id="employee-username" name="username" required maxlength="32" pattern=".*\S.*" title="账号不能为空或只包含空格" placeholder="请输入员工账号" autocomplete="off"></div>
@@ -100,13 +107,13 @@
                                 </div>
                             </fieldset>
                             <div class="field"><label for="employee-id">身份证号 <span>*</span></label><input id="employee-id" name="idNumber" required minlength="18" maxlength="18" pattern="[1-9][0-9]{16}[0-9Xx]" title="请输入 18 位身份证号，前 17 位为数字且首位不为 0，最后一位可为数字或 X" placeholder="请输入 18 位身份证号" autocomplete="off"></div>
-                            <div class="field"><label for="employee-password">初始密码 <span>*</span></label><input id="employee-password" name="password" type="password" required minlength="8" maxlength="72" pattern=".*\S.*" title="初始密码至少 8 个字符，不能只包含空格" placeholder="至少 8 个字符" autocomplete="new-password"></div>
                             <p id="employee-error" class="error" role="alert" hidden></p>
                         </div>
                         <div class="form-actions">
                             <a class="secondary" href="#employee">取消</a>
                             <button class="secondary" type="submit" value="save">保存</button>
                             <button class="primary" type="submit" value="continue">保存并继续添加</button>
+                            <button id="employee-edit-save" class="primary" type="submit" disabled hidden>保存</button>
                         </div>
                     </form>
                 </section>
