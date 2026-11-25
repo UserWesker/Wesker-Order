@@ -1,11 +1,12 @@
 package com.wesker.order.controller.admin;
 
-import com.wesker.order.config.JwtProperties;
+import com.wesker.order.constant.MessageConstant;
 import com.wesker.order.dto.AdminLoginDTO;
 import com.wesker.order.dto.EmployeeDTO;
 import com.wesker.order.dto.EmployeePageQueryDTO;
 import com.wesker.order.entity.Employee;
 import com.wesker.order.interceptor.JwtTokenAdminInterceptor;
+import com.wesker.order.properties.JwtProperties;
 import com.wesker.order.result.PageResult;
 import com.wesker.order.result.Result;
 import com.wesker.order.service.AuthenticationService;
@@ -41,7 +42,7 @@ public class EmployeeController {
         var account = authenticationService.login(request).orElse(null);
         if (account == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Result.error("用户名或密码错误，或账号已锁定"));
+                    .body(Result.error(MessageConstant.LOGIN_FAILED));
         }
 
         String token = JwtUtil.createJWT(
@@ -63,7 +64,7 @@ public class EmployeeController {
         try {
             employeeService.save(employeeDTO, operatorId);
         } catch (DuplicateKeyException exception) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error("用户名已存在"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error(MessageConstant.USERNAME_ALREADY_EXISTS));
         } catch (ResponseStatusException exception) {
             return ResponseEntity.status(exception.getStatusCode()).body(Result.error(exception.getReason()));
         }
@@ -97,7 +98,7 @@ public class EmployeeController {
             @PathVariable("id") Long employeeId) {
         Employee employee = employeeService.getEmployeeById(employeeId);
         if (employee == null) {
-            return Result.error("员工不存在");
+            return Result.error(MessageConstant.EMPLOYEE_NOT_FOUND);
         }
         return Result.success(employee);
     }
@@ -111,7 +112,7 @@ public class EmployeeController {
         try {
             employeeService.updateEmployee(employeeId, employeeDTO, operatorId);
         } catch (DuplicateKeyException exception) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error("用户名已存在"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.error(MessageConstant.USERNAME_ALREADY_EXISTS));
         } catch (ResponseStatusException exception) {
             return ResponseEntity.status(exception.getStatusCode()).body(Result.error(exception.getReason()));
         }

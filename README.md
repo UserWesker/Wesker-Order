@@ -4,6 +4,9 @@
 
 如果已有旧版数据库，并且 `employee` 表仍有密码列，请在停掉旧版应用后执行一次 [`scripts/003_remove_employee_password.sql`](scripts/003_remove_employee_password.sql)。
 
+分类管理需要在项目使用的数据库执行 [`scripts/004_create_category.sql`](scripts/004_create_category.sql)。执行后可从后台侧栏打开分类管理。
+使用旧版分类表的数据库需执行 [`scripts/006_disable_category_sort.sql`](scripts/006_disable_category_sort.sql)，以支持省略排序值新增分类。
+
 ## 接入自己的数据库
 
 1. 在 MySQL 中新建数据库。在 DataGrip 或 MySQL 客户端选中这个库，执行 [`scripts/001_schema.sql`](scripts/001_schema.sql)。如果想在数据库里查看连续的员工序号，再执行 [`scripts/002_employee_numbered_view.sql`](scripts/002_employee_numbered_view.sql)。

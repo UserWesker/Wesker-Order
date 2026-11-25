@@ -3,7 +3,9 @@ server:
 
 spring:
   config:
-    import: "optional:file:./.local/employee-login-local.yml"
+    import:
+      - "optional:file:./.local/employee-login-local.yml"
+      - "optional:file:./.local/oss-local.yml"
   datasource:
     url: ${WESKER_DB_URL:}
     username: ${WESKER_DB_USER:}
@@ -11,6 +13,10 @@ spring:
   sql:
     init:
       mode: never
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
 
 wesker:
   jwt:

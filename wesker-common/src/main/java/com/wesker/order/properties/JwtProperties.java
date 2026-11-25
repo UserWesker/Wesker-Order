@@ -1,4 +1,4 @@
-package com.wesker.order.config;
+package com.wesker.order.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

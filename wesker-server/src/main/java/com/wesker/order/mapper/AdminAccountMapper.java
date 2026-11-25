@@ -10,7 +10,4 @@ public interface AdminAccountMapper {
 
     @Select("SELECT id, username, name, password, status FROM admin_account WHERE username = #{username}")
     AdminAccount getByUsername(@Param("username") String username);
-
-    @Select("SELECT status FROM admin_account WHERE id = #{id} FOR UPDATE")
-    Integer lockStatusById(@Param("id") long id);
 }

@@ -54,18 +54,27 @@ function renderPage() {
     if (!signedIn) return;
 
     const hash = location.hash;
-    const activeLink = links.find(link => link.hash === hash) ?? links.at(-1);
+    const addingDish = hash === "#dishes/add";
+    const activeHash = addingDish ? "#dishes" : hash;
+    const activeLink = links.find(link => link.hash === activeHash) ?? links.at(-1);
     const adding = hash === "#employee/add";
     const editId = /^#employee\/edit\/([1-9]\d*)$/.exec(hash)?.[1];
     const showingForm = adding || Boolean(editId);
     const employees = activeLink.hash === "#employee";
+    const categories = hash === "#categories";
+    const dishes = activeHash === "#dishes";
     document.getElementById("account-name").textContent = `${session.name || session.userName} · 管理员`;
     const pageTitle = editId ? "编辑员工" : adding ? "添加员工" : activeLink.textContent.slice(1).trim();
-    document.getElementById("page-title").textContent = pageTitle;
-    document.getElementById("back").hidden = !showingForm;
+    document.getElementById("page-title").textContent = addingDish ? "添加菜品" : pageTitle;
+    const back = document.getElementById("back");
+    back.hidden = !showingForm && !addingDish;
+    back.href = addingDish ? "#dishes" : "#employee";
     employeeView.hidden = !employees || showingForm;
     document.getElementById("add-view").hidden = !showingForm;
-    document.getElementById("placeholder-view").hidden = employees;
+    if (categories !== !categoryView.hidden) showMessage(notice);
+    categoryView.hidden = !categories;
+    renderDishPage(dishes, addingDish);
+    document.getElementById("placeholder-view").hidden = employees || categories || dishes;
     links.forEach(link => {
         if (link === activeLink) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
@@ -89,9 +98,13 @@ function renderPage() {
     }
     if (employees && !showingForm) loadEmployees(page);
     else listRequest?.abort();
+    if (categories) loadCategories(categoryPage);
+    else hideCategories();
 }
 
 function clearSession(message = "") {
+    resetCategories();
+    resetDishPage();
     listRequest?.abort();
     detailRequest?.abort();
     detailRequest = undefined;
@@ -120,7 +133,8 @@ function clearSession(message = "") {
 
 async function request(path, { method = "GET", body, token, signal } = {}) {
     const headers = { Accept: "application/json" };
-    if (body !== undefined) headers["Content-Type"] = "application/json";
+    const multipart = body instanceof FormData;
+    if (body !== undefined && !multipart) headers["Content-Type"] = "application/json";
     if (token) headers.Authorization = `Bearer ${token}`;
 
     let response;
@@ -129,7 +143,7 @@ async function request(path, { method = "GET", body, token, signal } = {}) {
             method,
             headers,
             signal,
-            body: body === undefined ? undefined : JSON.stringify(body),
+            body: multipart ? body : JSON.stringify(body),
         });
     } catch (error) {
         if (signal?.aborted) throw error;
@@ -149,7 +163,7 @@ function post(path, body, token) {
     return request(path, { method: "POST", body, token });
 }
 
-function employeeAction(label, onClick) {
+function rowAction(label, onClick) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "row-action";
@@ -217,30 +231,34 @@ async function changeEmployeeStatus(button, employeeId, nextStatus) {
     }
 }
 
-function employeeRow(employee) {
-    const row = document.createElement("tr");
-    for (const value of [employee.name, employee.username, employee.phone]) {
-        row.insertCell().textContent = value || "—";
-    }
-    const enabled = employee.status === 1;
+function renderRecordStatus(enabled, text = enabled ? "启用" : "已禁用") {
     const status = document.createElement("span");
     status.className = "employee-status";
     status.dataset.enabled = String(enabled);
     const dot = document.createElement("span");
     dot.className = "employee-status-dot";
     dot.setAttribute("aria-hidden", "true");
-    status.append(dot, enabled ? "启用" : "已禁用");
-    row.insertCell().append(status);
+    status.append(dot, text);
+    return status;
+}
+
+function employeeRow(employee) {
+    const row = document.createElement("tr");
+    for (const value of [employee.name, employee.username, employee.phone]) {
+        row.insertCell().textContent = value || "—";
+    }
+    const enabled = employee.status === 1;
+    row.insertCell().append(renderRecordStatus(enabled));
     const lastOperation = employee.updateTime || employee.createTime;
     const timeCell = row.insertCell();
     timeCell.className = "employee-time";
     timeCell.textContent = lastOperation?.replace("T", " ").slice(0, 16) || "—";
     const actions = row.insertCell();
     actions.append(
-        employeeAction("编辑", () => { location.hash = `employee/edit/${employee.id}`; }),
-        employeeAction(enabled ? "禁用" : "启用", event =>
+        rowAction("编辑", () => { location.hash = `employee/edit/${employee.id}`; }),
+        rowAction(enabled ? "禁用" : "启用", event =>
             changeEmployeeStatus(event.currentTarget, employee.id, enabled ? 0 : 1)),
-        employeeAction("删除", event => deleteEmployee(event.currentTarget, employee.id)),
+        rowAction("删除", event => deleteEmployee(event.currentTarget, employee.id)),
     );
     return row;
 }

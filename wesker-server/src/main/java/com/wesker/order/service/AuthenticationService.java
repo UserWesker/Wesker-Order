@@ -19,6 +19,7 @@ public class AuthenticationService {
         this.adminAccountMapper = adminAccountMapper;
     }
 
+    // 校验管理员账号是否启用、密码是否正确，验证通过后返回账号信息。
     public Optional<AdminAccount> login(AdminLoginDTO request) {
         if (request.password().getBytes(StandardCharsets.UTF_8).length > 72) {
             return Optional.empty();

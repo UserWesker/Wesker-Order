@@ -1,7 +1,8 @@
 package com.wesker.order.interceptor;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.wesker.order.config.JwtProperties;
+import com.wesker.order.constant.MessageConstant;
+import com.wesker.order.properties.JwtProperties;
 import com.wesker.order.result.Result;
 import com.wesker.order.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            jsonMapper.writeValue(response.getOutputStream(), Result.error("请先登录"));
+            jsonMapper.writeValue(response.getOutputStream(), Result.error(MessageConstant.LOGIN_REQUIRED));
             return false;
         }
 

@@ -1,6 +1,7 @@
 package com.wesker.order.service.impl;
 
 import com.wesker.order.constant.EmployeeStatusConstant;
+import com.wesker.order.constant.MessageConstant;
 import com.wesker.order.dto.EmployeeDTO;
 import com.wesker.order.dto.EmployeePageQueryDTO;
 import com.wesker.order.entity.Employee;
@@ -32,11 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void save(EmployeeDTO employeeDTO, long operatorId) {
-        if (!EmployeeStatusConstant.ENABLE.equals(adminAccountMapper.lockStatusById(operatorId))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "管理员账号已锁定或不存在");
-        }
         if (adminAccountMapper.getByUsername(employeeDTO.username()) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "该账号已被管理员使用，请更换员工账号");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, MessageConstant.USERNAME_USED_BY_ADMIN);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -66,13 +64,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void startOrStop(Integer status, Long employeeId, Long operatorId) {
-        if (!EmployeeStatusConstant.ENABLE.equals(adminAccountMapper.lockStatusById(operatorId))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "管理员账号已锁定或不存在");
-        }
-
         int updated = employeeMapper.updateStatus(employeeId, status, LocalDateTime.now(), operatorId);
         if (updated == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "员工不存在");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageConstant.EMPLOYEE_NOT_FOUND);
         }
     }
 
@@ -89,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateEmployee(Long employeeId, EmployeeDTO employeeDTO, Long operatorId) {
         int updated = employeeMapper.update(employeeId, employeeDTO, LocalDateTime.now(), operatorId);
         if (updated == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "员工不存在");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageConstant.EMPLOYEE_NOT_FOUND);
         }
     }
 

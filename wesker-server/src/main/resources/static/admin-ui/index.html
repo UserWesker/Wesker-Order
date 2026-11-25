@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>威斯克点单管理员系统</title>
-    <link rel="stylesheet" href="./admin.css?v=employee-action-confirm-1">
-    <script src="./admin.js?v=employee-action-confirm-1" defer></script>
+    <link rel="stylesheet" href="./admin.css?v=dish-management-18">
+    <script src="./category.js?v=dish-management-18" defer></script>
+    <script src="./dish.js?v=dish-management-18" defer></script>
+    <script src="./admin.js?v=dish-management-18" defer></script>
 </head>
 <body>
     <main id="login-view" class="login-view">
@@ -114,6 +116,151 @@
                             <button class="secondary" type="submit" value="save">保存</button>
                             <button class="primary" type="submit" value="continue">保存并继续添加</button>
                             <button id="employee-edit-save" class="primary" type="submit" disabled hidden>保存</button>
+                        </div>
+                    </form>
+                </section>
+                <section id="category-view" class="panel" hidden>
+                    <div class="toolbar">
+                        <form id="category-search-form" class="filter">
+                            <label for="category-search">分类名称</label>
+                            <input id="category-search" name="name" maxlength="32" placeholder="请输入分类名称">
+                            <label for="category-type">分类类型</label>
+                            <select id="category-type" name="type">
+                                <option value="">全部类型</option>
+                                <option value="1">菜品分类</option>
+                                <option value="2">套餐分类</option>
+                            </select>
+                            <button class="secondary" type="submit">查询</button>
+                        </form>
+                        <div class="category-add-actions">
+                            <button class="primary" type="button" data-category-type="1">＋ 新增菜品分类</button>
+                            <button class="secondary" type="button" data-category-type="2">＋ 新增套餐分类</button>
+                        </div>
+                    </div>
+                    <p id="category-list-message" class="list-message" role="status" hidden></p>
+                    <div id="category-table" class="employee-table" tabindex="0" role="region" aria-label="分类查询结果" hidden>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">分类名称</th>
+                                    <th scope="col">分类类型</th>
+                                    <th scope="col">状态</th>
+                                    <th scope="col" class="employee-time">最后操作时间</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="category-records"></tbody>
+                        </table>
+                    </div>
+                    <div id="category-pagination" class="employee-pagination" hidden>
+                        <span id="category-page-info" aria-live="polite"></span>
+                        <button id="category-prev" class="secondary" type="button">上一页</button>
+                        <button id="category-next" class="secondary" type="button">下一页</button>
+                    </div>
+                    <dialog id="category-dialog" aria-labelledby="category-dialog-title">
+                        <h2 id="category-dialog-title"></h2>
+                        <form id="category-form">
+                            <div class="category-fields">
+                                <div class="field">
+                                    <label for="category-name">分类名称 <span>*</span></label>
+                                    <input id="category-name" name="name" required maxlength="32" autofocus>
+                                </div>
+                                <p id="category-form-error" class="error" role="alert" hidden></p>
+                            </div>
+                            <div class="form-actions">
+                                <button id="category-cancel" class="secondary" type="button">取消</button>
+                                <button id="category-save" class="primary" type="submit">保存</button>
+                            </div>
+                        </form>
+                    </dialog>
+                </section>
+                <section id="dish-view" class="panel" hidden>
+                    <div class="toolbar">
+                        <form id="dish-search-form" class="filter">
+                            <label for="dish-search">关键词</label>
+                            <input id="dish-search" name="name" maxlength="32" placeholder="输入关键词">
+                            <button class="secondary" type="submit">查询</button>
+                        </form>
+                        <a class="primary" href="#dishes/add">＋ 添加菜品</a>
+                    </div>
+                    <p id="dish-list-message" class="list-message" role="status" hidden></p>
+                    <div id="dish-table" class="employee-table" tabindex="0" role="region" aria-label="菜品列表" hidden>
+                        <table>
+                            <thead><tr>
+                                <th scope="col" class="dish-image-cell">菜品图片</th>
+                                <th scope="col">菜品名称</th>
+                                <th scope="col">菜品分类</th>
+                                <th scope="col">菜品价格</th>
+                                <th scope="col">售卖状态</th>
+                                <th scope="col" class="employee-time">最后操作时间</th>
+                                <th scope="col">操作</th>
+                            </tr></thead>
+                            <tbody id="dish-records"></tbody>
+                        </table>
+                    </div>
+                    <div id="dish-pagination" class="employee-pagination" hidden>
+                        <span id="dish-page-info" aria-live="polite"></span>
+                        <button id="dish-prev" class="secondary" type="button">上一页</button>
+                        <button id="dish-next" class="secondary" type="button">下一页</button>
+                    </div>
+                </section>
+                <section id="dish-add-view" class="panel" hidden>
+                    <form id="dish-form">
+                        <fieldset id="dish-fields" class="dish-fields" aria-label="菜品资料">
+                            <div class="field">
+                                <label for="dish-name">菜品名称 <span>*</span></label>
+                                <input id="dish-name" name="name" required maxlength="32" pattern=".*\S.*" placeholder="请输入菜品名称">
+                            </div>
+                            <div class="field">
+                                <label for="dish-category">菜品分类 <span>*</span></label>
+                                <div>
+                                    <select id="dish-category" name="categoryId" required>
+                                        <option value="">请选择菜品分类</option>
+                                    </select>
+                                    <p id="dish-category-message" class="dish-help" role="status" hidden></p>
+                                    <button id="dish-category-retry" class="secondary dish-small-button" type="button" hidden>重新加载分类</button>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="dish-price">菜品价格 <span>*</span></label>
+                                <div class="dish-price">
+                                    <input id="dish-price" name="price" type="number" min="0.01" max="99999999.99" step="0.01" inputmode="decimal" required placeholder="0.00">
+                                    <span>元</span>
+                                </div>
+                            </div>
+                            <fieldset class="dish-flavors dish-full-width">
+                                <legend>口味做法配置</legend>
+                                <div id="dish-flavor-groups"></div>
+                                <div class="dish-flavor-actions">
+                                    <button id="dish-add-flavor" class="secondary" type="button" aria-expanded="false" aria-controls="dish-flavor-kind">＋ 添加口味</button>
+                                    <select id="dish-flavor-kind" aria-label="选择口味类型" hidden>
+                                        <option value="">请选择口味</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                            <div class="field dish-full-width dish-image-field">
+                                <label for="dish-image">菜品图片 <span>*</span></label>
+                                <div class="dish-image-controls">
+                                    <img id="dish-image-preview" alt="菜品图片预览" hidden>
+                                    <div>
+                                        <input id="dish-image" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" aria-describedby="dish-image-hint" required>
+                                        <p id="dish-image-hint" class="dish-help">支持 JPG、PNG，最大 5 MB。保存时上传。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field dish-full-width">
+                                <label for="dish-description">菜品描述</label>
+                                <textarea id="dish-description" name="description" rows="3" maxlength="200" placeholder="选填，最多 200 字"></textarea>
+                            </div>
+                        </fieldset>
+                        <div class="dish-form-feedback">
+                            <p id="dish-form-error" class="error" role="alert" hidden></p>
+                            <p id="dish-form-status" class="dish-help" role="status" hidden></p>
+                        </div>
+                        <div class="form-actions">
+                            <a class="secondary" href="#dishes">取消</a>
+                            <button class="secondary" type="submit" value="save">保存</button>
+                            <button class="primary" type="submit" value="continue">保存并继续添加</button>
                         </div>
                     </form>
                 </section>
